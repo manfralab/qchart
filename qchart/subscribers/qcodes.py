@@ -31,7 +31,7 @@ def _convert_array(text: bytes) -> np.ndarray:
     return np.load(out)
 
 
-def get_data_structure(indep_params, meas_params):
+def _get_data_structure(indep_params, meas_params):
     """
     Return the structure of the dataset, i.e., a dictionary in the form
         {'parameter' : {
@@ -107,7 +107,7 @@ class QcodesSubscriber(object):
         # mark it as useless
         # else: create data structure
         if (len(self.independ_params) in [1, 2]) and (len(self.measured_params) > 0):
-            self.data_structure = get_data_structure(
+            self.data_structure = _get_data_structure(
                 self.independ_params, self.measured_params
             )
         else:

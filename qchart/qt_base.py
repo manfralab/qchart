@@ -7,7 +7,7 @@ This module exists to smooth out some of the differences between PySide2 and PyQ
 * Declare QtCore.Signal, .Slot in PyQt5
 * Declare loadUiType function for Pyside2
 
-Stolen from pyqtgraph project
+Stolen from pyqtgraph project.
 """
 
 import os, sys, re, time
@@ -15,10 +15,9 @@ import os, sys, re, time
 PYSIDE2 = 'PySide2'
 PYQT5 = 'PyQt5'
 
-## Automatically determine which Qt package to use (unless specified by
-## environment variable).
+## Automatically determine which Qt package to use
 ## This is done by first checking to see whether one of the libraries
-## is already imported. If not, then attempt to import PyQt4, then PySide.
+## is already imported.
 
 QT_LIB = None
 libOrder = [PYQT5, PYSIDE2]

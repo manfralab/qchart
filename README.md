@@ -15,14 +15,14 @@ This is a real bastard version of the work here: https://github.com/data-plottr/
 
 ## Usage:
 * Start the app from your script with `qchart.start_listener()`
-* In your working process (i.e., ipython session, jupyter notebook, ...) use one of the client tools to package the data correctly (or do it yourself) and send it (see examples!).
+* In your working process (i.e., ipython session, jupyter notebook, ...) use one of the client tools to package the data correctly
 * If you're using qcodes with the dataset (v2), there is a subscriber that
-  can be used. See examples.
+  can be used. See example.
 
 # Requirements:
-* python >= 3.6 (f-strings...)
-* pandas >= 0.22
-* xarray
-* numpy
-* matplotlib
-* simplejson
+* python >= 3.7
+* pyzmq
+* matplotlib>=3.0.0'
+* pandas>=0.22'
+* xarray'
+* simplejson'
