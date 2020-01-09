@@ -4,7 +4,7 @@ from warnings import warn
 from pathlib import Path
 import simplejson as json
 import numpy as np
-from qchart.client import DataSender, NumpyJSONEncoder
+from qchart.clients.sender import DataSender
 from qchart.listener import listener_is_running
 from qchart.config import config
 
@@ -23,6 +23,7 @@ def add_qcodes_subscriber(current_config):
     }
 
     current_config.subscription.default_subscribers = ['qchart']
+
 
 
 def _convert_array(text: bytes) -> np.ndarray:
