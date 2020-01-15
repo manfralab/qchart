@@ -1,1 +1,1 @@
-from qchart.subscribers.qcodes import add_qcodes_subscriber, QcodesSubscriber
+from qchart.clients.qcodes import add_qcodes_subscriber, QcodesSubscriber

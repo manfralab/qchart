@@ -2,6 +2,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+from qchart.config import config
+
 
 def get_log_directory():
     log_directory = Path(config['logging']['directory'])

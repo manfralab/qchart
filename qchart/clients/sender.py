@@ -3,6 +3,7 @@ import simplejson as json
 import time
 import numpy as np
 from qchart.config import config
+from qchart.clients.utils import NumpyJSONEncoder
 
 
 class DataSender(object):

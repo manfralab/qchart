@@ -7,13 +7,13 @@ import numpy as np
 from qchart.clients.sender import DataSender
 from qchart.listener import listener_is_running
 from qchart.config import config
-from qchart.utils.encoder import NumpyJSONEncoder
+from qchart.clients.utils import NumpyJSONEncoder
 from qchart.logging import create_logger
 
 
 def add_qcodes_subscriber(current_config):
     current_config.subscription.subscribers['qchart'] = {
-        'factory': 'qchart.subscribers.QcodesSubscriber',
+        'factory': 'qchart.clients.qcodes.QcodesSubscriber',
         'factory_kwargs': {},
         'subscription_kwargs': {
             'min_wait': 0,
@@ -163,6 +163,6 @@ class QcodesSubscriber(object):
         self.sender.data["action"] = "new_data"
         self.sender.data["datasets"] = data
 
-        self.logger.debug(f'DATA SENT: {self.sender.data})
+        self.logger.debug(f'DATA SENT: {self.sender.data}')
 
         self.sender.send_data()

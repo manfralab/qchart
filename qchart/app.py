@@ -24,8 +24,8 @@ from matplotlib.figure import Figure
 
 from qchart.qt_base import QtCore, QtGui, QtWidgets, mkQApp
 from qchart.config import config
-from qchart.client import NumpyJSONEncoder
-from qchar.logging import create_logger
+from qchart.clients.utils import NumpyJSONEncoder
+from qchart.logging import create_logger
 
 
 LOGGER = create_logger('app')
