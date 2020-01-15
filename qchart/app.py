@@ -6,9 +6,6 @@ original author: Wolfgang Pfaff <wolfgangpfff@gmail.com>
 qchart maintainer: Nik Hartman
 """
 
-# TO DO:
-# clean up use of logging
-
 import sys
 import time
 from collections import OrderedDict
@@ -28,37 +25,13 @@ from matplotlib.figure import Figure
 from qchart.qt_base import QtCore, QtGui, QtWidgets, mkQApp
 from qchart.config import config
 from qchart.client import NumpyJSONEncoder
+from qchar.logging import create_logger
 
-### setup LOGGER ###
-import logging
-from logging.handlers import RotatingFileHandler
-from pathlib import Path
 
-def get_log_directory():
-    log_directory = Path(config['logging']['directory'])
-    log_directory.mkdir(parents=True, exist_ok=True)
-    return log_directory
+LOGGER = create_logger('app')
 
-def create_logger():
-    filename = Path(get_log_directory(), 'qchart.log')
-    logger = logging.getLogger(__name__)
-    log_handler = RotatingFileHandler(filename, maxBytes=1048576, backupCount=5)
-    log_handler.setFormatter(
-        logging.Formatter(
-            '%(asctime)s %(levelname)s: '
-            '%(message)s '
-            '[in %(pathname)s:%(lineno)d]'
-        )
-    )
-    log_level = logging.getLevelName(config['logging']['level'])
-    logger.setLevel(log_level)
-    logger.addHandler(log_handler)
-    return logger
-
-LOGGER = create_logger()
 
 ### APP ###
-
 APPTITLE = "qchart"
 TIMEFMT = "[%Y-%m-%d %H:%M:%S]"
 

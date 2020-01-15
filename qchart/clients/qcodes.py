@@ -7,14 +7,14 @@ import numpy as np
 from qchart.clients.sender import DataSender
 from qchart.listener import listener_is_running
 from qchart.config import config
+from qchart.utils.encoder import NumpyJSONEncoder
+from qchart.logging import create_logger
 
 
 def add_qcodes_subscriber(current_config):
     current_config.subscription.subscribers['qchart'] = {
         'factory': 'qchart.subscribers.QcodesSubscriber',
-        'factory_kwargs': {
-            'subscriber_logs': False,
-        },
+        'factory_kwargs': {},
         'subscription_kwargs': {
             'min_wait': 0,
             'min_count': 1,
@@ -25,14 +25,13 @@ def add_qcodes_subscriber(current_config):
     current_config.subscription.default_subscribers = ['qchart']
 
 
-
 def _convert_array(text: bytes) -> np.ndarray:
     out = io.BytesIO(text)
     out.seek(0)
     return np.load(out)
 
 
-def _get_data_structure(indep_params, meas_params):
+def _structure_from_dataset(indep_params, meas_params):
     """
     Return the structure of the dataset, i.e., a dictionary in the form
         {'parameter' : {
@@ -63,7 +62,9 @@ def _get_data_structure(indep_params, meas_params):
 
 
 class QcodesSubscriber(object):
-    def __init__(self, dataset, subscriber_logs=False):
+    def __init__(self, dataset):
+
+        self.logger = create_logger('qcodes_subscriber')
 
         # get some run info from the qcodes dataset
         self.ds = dataset
@@ -71,16 +72,6 @@ class QcodesSubscriber(object):
         self.data_id = "{} # run ID = {}".format(self.db_path, self.ds.run_id)
 
         self.sender = DataSender(self.data_id)
-
-        # create log folder, if needed
-        self.log_id = None
-        if subscriber_logs:
-            self.log_id = 0
-            self.log_dir = Path(
-                config["logging"]["directory"],
-                "data_sent/run-{}".format(self.ds.run_id),
-            )
-            self.log_dir.mkdir(parents=True, exist_ok=True)
 
         ### get all of these from dataset ###
         # independent parameters are expected in the order (x, y)
@@ -108,27 +99,13 @@ class QcodesSubscriber(object):
         # mark it as useless
         # else: create data structure
         if (len(self.independ_params) in [1, 2]) and (len(self.measured_params) > 0):
-            self.data_structure = _get_data_structure(
+            self.data_structure = _structure_from_dataset(
                 self.independ_params, self.measured_params
             )
+            self.logger.debug(f'STRUCTURE: {self.data_structure}')
         else:
             self.data_structure = None
             warn(f"Cannot create 1 or 2d plots for {self.data_id}")
-
-    def _log_data_send(self):
-        if self.log_id is not None:
-
-            fp = Path(self.log_dir, "call-{}.json".format(self.log_id))
-            with fp.open("w", encoding="utf-8") as f:
-                json.dump(
-                    dict(
-                        dataStructure=self.data_structure, senderDict=self.sender.data
-                    ),
-                    fp=f,
-                    ignore_nan=True,
-                    cls=NumpyJSONEncoder,
-                )
-            self.log_id += 1
 
     def __call__(self, results, length, state):
         """ this function is called by qcodes when new data
@@ -186,5 +163,6 @@ class QcodesSubscriber(object):
         self.sender.data["action"] = "new_data"
         self.sender.data["datasets"] = data
 
+        self.logger.debug(f'DATA SENT: {self.sender.data})
+
         self.sender.send_data()
-        self._log_data_send()
